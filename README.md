@@ -1,4 +1,4 @@
-# AdrenalinRush for EXILED
+# Adrenalin Rush for EXILED
 
 ![downloads](https://img.shields.io/github/downloads/Vretu-Dev/AdrenalinRush/total)
 
