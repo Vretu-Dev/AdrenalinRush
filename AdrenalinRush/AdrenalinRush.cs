@@ -57,6 +57,5 @@ namespace AdrenalinRush
             // Maximum intensity
             movementBoost.Intensity = Config.BoostIntensity;
         }
-
     }
 }
