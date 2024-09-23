@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using CustomPlayerEffects;
 using Exiled.API.Enums;
 using Exiled.API.Features;
 using Exiled.Events.EventArgs.Player;
@@ -13,7 +14,7 @@ namespace AdrenalinRush
         public override string Name => "Adrenalin Rush";
         public override string Author => "Vretu";
         public override string Prefix { get; } = "AR";
-        public override Version Version => new Version(1, 0, 2);
+        public override Version Version => new Version(1, 0, 3);
         public override Version RequiredExiledVersion { get; } = new Version(8, 9, 8);
 
         public override void OnEnabled()
@@ -31,7 +32,18 @@ namespace AdrenalinRush
         {
             if (ev.Item.Type == ItemType.Adrenaline)
             {
-                Timing.RunCoroutine(ApplySmoothBoost(ev.Player));
+                if (!ev.Player.IsEffectActive<Scp207>())
+                {
+                    Timing.RunCoroutine(ApplySmoothBoost(ev.Player));
+                }
+            }
+            else if (ev.Item.Type == ItemType.SCP207)
+            {
+                // Jeśli gracz ma efekt Adrenaliny, usuń go zanim nałożony zostanie SCP-207
+                if (ev.Player.IsEffectActive<MovementBoost>())
+                {
+                    ev.Player.DisableEffect(EffectType.MovementBoost);
+                }
             }
         }
         private IEnumerator<float> ApplySmoothBoost(Player player)
@@ -56,6 +68,10 @@ namespace AdrenalinRush
             }
             // Maximum intensity
             movementBoost.Intensity = Config.BoostIntensity;
+
+            yield return Timing.WaitForSeconds(duration);
+
+            player.DisableEffect(EffectType.MovementBoost);
         }
     }
 }
